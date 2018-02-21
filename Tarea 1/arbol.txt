@@ -2,17 +2,21 @@
 2 3
 2 3
   3
+ (1 (2 3))
 
-Recursivo
-se aplica la misma función para cada hijo
-se compara un "res" con el valor de ese valor en ese momento
-si es más grande, cambio valor de res
+(Defun profundidad(lst)
+  (Cond ((null lst) )
+        ((atom lst) return 1)
+        (t
+            (setq comp 0 tmp (cdr lst))
+            (loop
+              (when (null caadr tmp) (return comp))
+              (print comp)
+              (max comp (+ 1 profundidad(cadr lst)))
+            )
+        )
+  )
+)
 
-res=0
-(Defun altura(lst))
-if lst está vacia
-  return 1
-for lst tiene siguiente
-  tmp = altura(car lst)
-  if tmp > res
-    res=res++
+
+(Defun profundidad(lst) (Cond ((null lst) ) ((atom lst) return 1) (t (setq comp 0 tmp (cdr lst)) (loop (when (null caadr tmp) (return comp)) (print comp) (max comp (+ 1 profundidad(cadr lst)))))))
