@@ -1,22 +1,14 @@
- 1
-2 3
-2 3
-  3
- (1 (2 3))
-
 (Defun profundidad(lst)
-  (Cond ((null lst) )
-        ((atom lst) return 1)
-        (t
-            (setq comp 0 tmp (cdr lst))
-            (loop
-              (when (null caadr tmp) (return comp))
-              (print comp)
-              (max comp (+ 1 profundidad(cadr lst)))
-            )
-        )
-  )
-)
-
-
-(Defun profundidad(lst) (Cond ((null lst) ) ((atom lst) return 1) (t (setq comp 0 tmp (cdr lst)) (loop (when (null caadr tmp) (return comp)) (print comp) (max comp (+ 1 profundidad(cadr lst)))))))
+       (cond ((null lst) 0)
+         ((atom lst) 0) ; Cuando entra un solo Atom porque es del formato (L)
+         ; de la iteración anterior
+         ; Crea variables locales
+         (t (let ((elem (car lst)) (lstR (cdr lst)) (cont 0))
+           (loop
+             ; Lo hace mientras que el elemento de la lista no es nula: ()
+             (when (null elem) (return (incf cont)))
+             ; Ve si lo que tiene como la profundida de uno de sus hijos es
+             ; mayor que el que le sigue
+             (setq cont (max cont (profundidad elem)))
+             (setq elem (car lstR) lstR (cdr lstR)))))
+         ))
