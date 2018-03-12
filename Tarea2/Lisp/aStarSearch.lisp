@@ -56,15 +56,18 @@
 
 ; Suponer que NIL = ∞
 (defun mejorRuta(ini fin)
-  (rbfs fin '(1 0 ini (calcF ini fin)) nil))
+  (rbfs fin (list 1 0 ini (calcF ini fin)) nil))
 
 (defun rbfs(fin nodo fLimit)
   (when (eq fin (third nodo)) (push nodo recorrido) (return-from rbfs (list (third nodo))))
   (let (sucesores '())
+    (print (third nodo))
     (let (hijos (obtenSucesores (third nodo)))
+      (print hijos)
       (mapcar #'(lambda (elem)
         (push (list num (car nodo) elem nil) sucesores) ; f(n) se pone después
         (incf num)) hijos))
+    (print sucesores)
     (when (null sucesores) (return-from rbfs (list 'Fallo nil)))
     (mapcar #'(lambda (elem) ; CUIDADO puede haber errores, tal vez no se actualice elem al hacer setq
       (setf (fourth elem) (max (fourth nodo) (calcF (third elem) fin)))) sucesores)
