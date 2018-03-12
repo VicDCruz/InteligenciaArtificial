@@ -1,5 +1,6 @@
 ; DUMMY!!!
-(setq ciudades '(A B C D)
+(defun inicio(dummy)
+  (setq ciudades '(A B C D)
       costos '(0 7 10 15) ; Path Cost [h(n)]
       distancias '( ; Step Cost [g(n)]
                   (0 0 1 0) ; Para A
@@ -8,7 +9,7 @@
                   (0 10 6 0) ; Para D
                   )
       num 2
-      recorrido '())
+      recorrido '()))
 
 ; Estructura del NODO: (# Padre Nom f(n))
 ; f(n) = g(n) + h(n)
@@ -42,27 +43,31 @@
   (+ (buscaDist ciudad destino) (third (buscaCiudad ciudad))))
 
 (defun minimum (lst)
-  (let (minimo (car lst))
+  (let (minimo '())
+    (setq minimo (car lst))
     (mapcar #'(lambda (elem)
       (setq minimo (if (< (fourth minimo) (fourth elem)) minimo elem) )) lst)
   minimo))
 
 (defun segundoMin(lst primerMin)
-  (let (minimo (car lst))
+  (let (minimo '())
+    (setq minimo (car lst))
     (mapcar #'(lambda (elem)
-      (setq minimo (if (and (< (fourth minimo) (fourth elem)) (> (fourth minimo) (fourth primerMin))) minimo
-                    (if (> (fourth elem) (fourth primerMin)) elem)) )) lst)
+      (setq minimo (if (and (< (fourth elem) (fourth minimo)) (> (fourth elem) (fourth primerMin))) elem minimo))) lst)
   minimo))
 
 ; Suponer que NIL = ∞
 (defun mejorRuta(ini fin)
+  (inicio nil)
+  (setq contPasos 0)
   (rbfs fin (list 1 0 ini (calcF ini fin)) nil))
 
 (defun rbfs(fin nodo fLimit)
+  (when (eq contPasos 20) (return-from rbfs 'Nada))
   (when (eq fin (third nodo)) (push nodo recorrido) (return-from rbfs (list (third nodo))))
   (let (sucesores '())
-    (print (third nodo))
-    (let (hijos (obtenSucesores (third nodo)))
+    (let (hijos '())
+      (setq hijos (obtenSucesores (third nodo)))
       (print hijos)
       (mapcar #'(lambda (elem)
         (push (list num (car nodo) elem nil) sucesores) ; f(n) se pone después
@@ -71,10 +76,12 @@
     (when (null sucesores) (return-from rbfs (list 'Fallo nil)))
     (mapcar #'(lambda (elem) ; CUIDADO puede haber errores, tal vez no se actualice elem al hacer setq
       (setf (fourth elem) (max (fourth nodo) (calcF (third elem) fin)))) sucesores)
+    (print sucesores)
     (loop
       (setq mejor (minimum sucesores))
-      (when (> mejor (if (null fLimit) (+ 1 (fourth mejor)) fLimit)) (return (list 'Fallo (fourth mejor))))
+      (when (> (fourth mejor) (if (null fLimit) (+ 1 (fourth mejor)) fLimit)) (return (list 'Fallo (fourth mejor))))
       (setq alternativa (segundoMin sucesores mejor))
-      (setq resRBFS (rbfs fin mejor (min fLimit (fourth alternativa))) resultado (car resRBFS))
+      (print alternativa)
+      (setq resRBFS (rbfs fin mejor (min (if (null fLimit) (+ 1 (fourth alternativa)) fLimit) (fourth alternativa))) resultado (car resRBFS))
       (setf (fourth mejor) (second resRBFS))
       (if (not (eql resultado 'Fallo)) (return-from rbfs resultado)))))
