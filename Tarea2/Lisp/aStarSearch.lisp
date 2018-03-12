@@ -7,9 +7,8 @@
                   (1 7 0 6) ; Para C
                   (0 10 6 0) ; Para D
                   )
-      num 2)
-
-(setq sucesores '() recorrido '() visitado '())
+      num 2
+      recorrido '())
 
 ; Estructura del NODO: (# Padre Nom f(n))
 ; f(n) = g(n) + h(n)
@@ -46,8 +45,6 @@
   (let (minimo (car lst))
     (mapcar #'(lambda (elem)
       (setq minimo (if (< (fourth minimo) (fourth elem)) minimo elem) )) lst)
-  (remove minimo sucesores :test 'Equal)
-  (push minimo visitado)
   minimo))
 
 (defun segundoMin(lst primerMin)
@@ -63,17 +60,18 @@
 
 (defun rbfs(fin nodo fLimit)
   (when (eq fin (third nodo)) (push nodo recorrido) (return-from rbfs (list (third nodo))))
-  (let (hijos (obtenSucesores (third nodo)))
-    (mapcar #'(lambda (elem)
-      (push (list num (car nodo) elem nil) sucesores) ; f(n) se pone después
-      (incf num)) hijos))
-  (when (null sucesores) (return-from rbfs (list 'Fallo nil)))
-  (mapcar #'(lambda (elem) ; CUIDADO puede haber errores, tal vez no se actualice elem al hacer setq
-    (setf (fourth elem) (max (fourth nodo) (calcF (third elem) fin)))) sucesores)
-  (loop
-    (setq mejor (minimum sucesores))
-    (when (> mejor (if (null fLimit) (+ 1 (fourth mejor)) fLimit)) (return (list 'Fallo (fourth mejor))))
-    (setq alternativa (segundoMin sucesores mejor))
-    (setq resRBFS (rbfs fin mejor (min fLimit (fourth alternativa))) resultado (car resRBFS))
-    (setf (fourth mejor) (second resRBFS))
-    (if (not (eql resultado 'Fallo)) (return-from rbfs resultado))))
+  (let (sucesores '())
+    (let (hijos (obtenSucesores (third nodo)))
+      (mapcar #'(lambda (elem)
+        (push (list num (car nodo) elem nil) sucesores) ; f(n) se pone después
+        (incf num)) hijos))
+    (when (null sucesores) (return-from rbfs (list 'Fallo nil)))
+    (mapcar #'(lambda (elem) ; CUIDADO puede haber errores, tal vez no se actualice elem al hacer setq
+      (setf (fourth elem) (max (fourth nodo) (calcF (third elem) fin)))) sucesores)
+    (loop
+      (setq mejor (minimum sucesores))
+      (when (> mejor (if (null fLimit) (+ 1 (fourth mejor)) fLimit)) (return (list 'Fallo (fourth mejor))))
+      (setq alternativa (segundoMin sucesores mejor))
+      (setq resRBFS (rbfs fin mejor (min fLimit (fourth alternativa))) resultado (car resRBFS))
+      (setf (fourth mejor) (second resRBFS))
+      (if (not (eql resultado 'Fallo)) (return-from rbfs resultado)))))
