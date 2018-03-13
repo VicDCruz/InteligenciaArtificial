@@ -1,8 +1,10 @@
 ; DUMMY!!!
+; Se necesita la matriz de distancias para identificar cuáles son las ciudades
+; que están conectadas a otras
 (defun inicio(dummy)
   (setq ciudades '(A B C D E F)
-      costos '(0 8 35 92 61 8) ; Path Cost [h(n)]
-      distancias '( ; Step Cost [g(n)]
+      costos '(5 8 25 20 21 0) ; Path Cost [h(n)] (Distancia en línea recta al destino final)
+      distancias '( ; Step Cost [g(n)] (¿Cuánto me cuesta llegar de una ciudad a otra?)
                   (0 1 0 4 0 0) ; Para A
                   (1 0 5 7 3 6) ; Para B
                   (0 5 0 0 0 9) ; Para C
@@ -56,21 +58,23 @@
 (defun segundoMin(lst primerMin)
   (let (minimo '())
     (setq minimo (if (not (eq (fourth (car lst)) (fourth primerMin))) (car lst) (cadr lst)))
+    (if (null minimo) (setq minimo (car lst)))
     (mapcar #'(lambda (elem)
       (setq minimo (if (and (< (fourth elem) (fourth minimo)) (> (fourth elem) (fourth primerMin))) elem minimo))) lst)
-  minimo))
+    minimo))
 
 ; Suponer que NIL = ∞
 (defun mejorRuta(ini fin)
   (inicio nil)
   (setq contPasos 0)
-  (rbfs fin (list 1 0 ini (calcF ini fin) nil) nil)
+  (rbfs fin (list 1 0 ini (calcF ini ini) nil) nil)
+  (push ini recorrido)
   recorrido)
   ; Recordar que el nodo inicial esta (# padre Nom f(n) NomPadre)
 
 (defun rbfs(fin nodo fLimit)
   (incf contPasos)
-  (when (eq contPasos 50) (return-from rbfs 'Nada))
+  (when (eq contPasos 200) (return-from rbfs 'Nada))
   (when (eq fin (third nodo)) (return-from rbfs (list (third nodo))))
   (let (sucesores '())
     (let (hijos '())
