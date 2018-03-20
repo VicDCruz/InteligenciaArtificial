@@ -1,21 +1,35 @@
+(setq args nil)
+(let ((in (open "/Users/daniel/Documents/InteligenciaArtificial/Tarea2/infoLisp.txt" :if-does-not-exist nil)))
+  (when in
+    (loop for line = (read in nil)
+         while line do (push line args))
+    (close in)))
+
+(setq inicio (nth 1 args) fin (nth 0 args))
+
 ; DUMMY!!!
 ; Se necesita la matriz de distancias para identificar cuáles son las ciudades
 ; que están conectadas a otras
 (defun inicio(dummy)
-  (setq ciudades '(A B C D E F)
-      costos '(5 8 25 20 21 0) ; Path Cost [h(n)] (Distancia en línea recta al destino final)
-      distancias '( ; Step Cost [g(n)] (¿Cuánto me cuesta llegar de una ciudad a otra?)
-                  (0 1 0 4 0 0) ; Para A
-                  (1 0 5 7 3 6) ; Para B
-                  (0 5 0 0 0 9) ; Para C
-                  (4 7 0 0 8 0) ; Para D
-                  (0 3 0 8 0 2) ; Para E
-                  (0 6 9 0 2 0) ; Para F
-                  )
+  ; (setq ciudades '(A B C D E F)
+  ;     costos '(5 8 25 20 21 0) ; Path Cost [h(n)] (Distancia en línea recta al destino final)
+  ;     distancias '( ; Step Cost [g(n)] (¿Cuánto me cuesta llegar de una ciudad a otra?)
+  ;                 (0 1 0 4 0 0) ; Para A
+  ;                 (1 0 5 7 3 6) ; Para B
+  ;                 (0 5 0 0 0 9) ; Para C
+  ;                 (4 7 0 0 8 0) ; Para D
+  ;                 (0 3 0 8 0 2) ; Para E
+  ;                 (0 6 9 0 2 0) ; Para F
+  ;                 )
+
+
+  (setq ciudades (nth 4 args)
+      costos (nth 2 args) ; Path Cost [h(n)] (Distancia en línea recta al destino final)
+      distancias (nth 3 args)
       num 2
       recorrido '()))
 
-; Estructura del NODO: (# Padre Nom f(n) NomPadre)
+; Estructura del NODO: (# Padre Nom f(n) SumGDePadre)
 ; f(n) = g(n) + h(n)
 
 ; Regresa un nodo de una ciudad con su posición, su nombre y su costo, dado un NOMBRE
@@ -35,18 +49,18 @@
 
 ; Va a la matriz de distancias, obtiene la tupla de CIUDAD y obtiene el nombre
 ; de la ciudad que tiene una distancia diferente de 0
-(defun obtenSucesores(ciudad padre)
+(defun obtenSucesores(ciudad)
   (setq infoC (buscaCiudad ciudad) vecinos '() distVecinos (nth (- (car infoC) 1) distancias) cont 1)
   (let ((contVecino 1))
     (mapcar #'(lambda (elem)
-      (if (and (not (eq elem 0)) (not (eql padre (nth (- cont 1) ciudades))))
+      (if (not (eq elem 0))
         (push (nth (- cont 1) ciudades) vecinos))
       (incf cont)
       (incf contVecino)) distVecinos))
   (reverse vecinos))
 
 (defun calcF(ciudad destino)
-  (+ (buscaDist ciudad destino) (third (buscaCiudad ciudad))))
+  (+ (buscaDist ciudad destino) (third (buscaCiudad destino))))
 
 (defun minimum (lst)
   (let (minimo '())
@@ -67,35 +81,50 @@
 (defun mejorRuta(ini fin)
   (inicio nil)
   (setq contPasos 0)
-  (rbfs fin (list 1 0 ini (calcF ini ini) nil) nil)
+  (rbfs fin (list 1 0 ini (calcF ini ini) 0) nil)
   (push ini recorrido)
-  recorrido)
-  ; Recordar que el nodo inicial esta (# padre Nom f(n) NomPadre)
+  (with-open-file (my-stream
+                 "/Users/daniel/Documents/InteligenciaArtificial/Tarea2/solLisp.txt"
+                 :direction :output
+                 :if-exists :supersede)
+    (print recorrido my-stream)))
+  ; Recordar que el nodo inicial esta (# padre Nom f(n) SumGDePadre)
 
 (defun rbfs(fin nodo fLimit)
+  ; (print 'EstoyEn)
+  ; (print (third nodo))
+  ; (print 'Limite)
+  ; (print fLimit)
   (incf contPasos)
-  (when (eq contPasos 200) (return-from rbfs 'Nada))
-  (when (eq fin (third nodo)) (return-from rbfs (list (third nodo))))
-  (let (sucesores '())
+  ; (when (eq contPasos 10) (return-from rbfs 'Nada))
+  (when (eql fin (third nodo)) (return-from rbfs (list (third nodo))))
+  (let ((sucesores '()) (mejor nil))
     (let (hijos '())
-      (setq hijos (obtenSucesores (third nodo) (fifth nodo)))
-      (print hijos)
+      (setq hijos (obtenSucesores (third nodo)))
       (mapcar #'(lambda (elem)
-        (push (list num (car nodo) elem nil (third nodo)) sucesores) ; f(n) se pone después
+        (push (list num (car nodo) elem nil (+ (fifth nodo) (buscaDist (third nodo) elem))) sucesores) ; f(n) se pone después
         (incf num)) hijos))
-    (print sucesores)
+    ; (print sucesores)
     (when (null sucesores) (return-from rbfs (list 'Fallo nil)))
     (mapcar #'(lambda (elem) ; CUIDADO puede haber errores, tal vez no se actualice elem al hacer setq
-      (setf (fourth elem) (max (fourth nodo) (calcF (third elem) fin)))) sucesores)
-    (print sucesores)
+      (setf (fourth elem) (max (fourth nodo) (+ (calcF (third nodo) (third elem)) (fifth nodo))))) sucesores)
+    ; (print sucesores)
     (loop
       (setq mejor (minimum sucesores))
-      (print 'mejor)
-      (print mejor)
-      (when (> (fourth mejor) (if (null fLimit) (+ 1 (fourth mejor)) fLimit)) (return (list 'Fallo (fourth mejor))))
-      (setq alternativa (segundoMin sucesores mejor))
-      (print 'alternativa)
-      (print alternativa)
+      ; (print 'mejor)
+      ; (print mejor)
+      (when (> (fourth mejor) (if (null fLimit) (+ 1 (fourth mejor)) fLimit)) (return-from rbfs (list 'Fallo (fourth mejor))))
+      ; (setq alternativa (segundoMin sucesores mejor))
+      ; (print 'alternativa)
+      ; (print alternativa)
       (setq resRBFS (rbfs fin mejor (min (if (null fLimit) (+ 1 (fourth alternativa)) fLimit) (fourth alternativa))) resultado (car resRBFS))
+      ; (print 'RechecarPadre)
+      ; (print nodo)
+      ; (print 'CambioMejor)
+      ; (print mejor)
       (setf (fourth mejor) (second resRBFS))
+      ; (print (second resRBFS))
+      ; (print mejor)
       (when (not (eql resultado 'Fallo)) (push resultado recorrido) (return-from rbfs (list (third nodo))))))))
+
+(mejorRuta inicio fin)

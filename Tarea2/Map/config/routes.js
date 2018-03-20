@@ -32,9 +32,10 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': {
-    view: 'mapa'
-  }
+  // '/': {
+  //   view: 'mapa'
+  // }
+
 
   /***************************************************************************
   *                                                                          *
@@ -45,5 +46,6 @@ module.exports.routes = {
   * for configuration options and examples.                                  *
   *                                                                          *
   ***************************************************************************/
-
+  '/': 'MapaController.fillData',
+  'POST /result': 'MapaController.result'
 };

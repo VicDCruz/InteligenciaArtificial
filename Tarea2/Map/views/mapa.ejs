@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Mapa</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
     <link rel="stylesheet" type="text/css" href="/styles/style.css">
   </head>
   <body>
@@ -12,9 +13,17 @@
       <div class="col-md-4 offset-md-1">
         <h2 class="display-4">Coordenadas</h2>
         <h3>Inicio:</h3>
-        <input type="text" name="inicio" id="inicio" placeholder="Ingresa una Ciudad" class="form-control"><p>
+        <select id="ciudIni" class="form-control">
+          <%for (var i = 0; i < ciudades.length; i++) {%>
+            <option value=<%=i%> ><%=ciudades[i]%></option>
+          <%}%>
+        </select>
         <h3>Fin:</h3>
-        <input type="text" name="fin" id="fin" placeholder="Ingresa una Ciudad" class="form-control">
+        <select id="ciudFin" class="form-control">
+          <%for (var i = 0; i < ciudades.length; i++) {%>
+            <option value=<%=i%> ><%=ciudades[i]%></option>
+          <%}%>
+        </select>
         <br>
         <button type="button" name="button" class="btn btn-primary" onclick="getRuta()">Calcula ruta</button>
       </div>
@@ -27,8 +36,27 @@
     <script>
       var map;
       var marcadores=[];
-      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      var labels = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!$%&/()=?¿¡!{}ç';
       var labelIndex = 0;
+      var ciudades=document.getElementById('ciudIni');
+      var distancias=[];
+      var destinos=[];
+
+      function initDistancias() {
+        for (var i = 0; i < ciudades.length; i++) {
+          var tmp=[];
+          for (var j = 0; j < ciudades.length; j++) {
+            tmp[j]=0;
+          }
+          distancias[i]=tmp;
+        }
+      }
+
+      function initDestinos() {
+        for (var i = 0; i < ciudades.length; i++) {
+          destinos[i]=0;
+        }
+      }
 
       function setMapOnAll(map) {
         for (var i = 0; i < marcadores.length; i++) {
@@ -36,12 +64,25 @@
         }
       }
 
-      function addMarker(location) {
+      function addSolve(location) {
+        var pinImage='https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
         var marker = new google.maps.Marker({
           position: location,
           label: labels[labelIndex++ % labels.length],
+          icon: pinImage,
           map: map
         });
+
+        marcadores.push(marker);
+      }
+
+      function addMarker(location, lugar) {
+        var marker = new google.maps.Marker({
+          position: location,
+          label: lugar,
+          map: map
+        });
+        // labels[labelIndex++ % labels.length]
         marcadores.push(marker);
       }
 
@@ -54,47 +95,186 @@
         marcadores = [];
       }
 
-      function setMapOnAll(map) {
-        for (var i = 0; i < marcadores.length; i++) {
-          marcadores[i].setMap(map);
-        }
-      }
-
       function getCoord(lugar) {
         var geocoder = new google.maps.Geocoder();
 
-        geocoder.geocode({'address':lugar}, function(res, status){
-          if (status === 'OK') {
-            addMarker(res[0].geometry.location)
-          } else {
-            alert('Geocode no pudo encontrar el lugar porque: ' + status);
+        return new Promise(function (resolve, reject) {
+          setTimeout(function () {
+            geocoder.geocode({'address':lugar}, function(res, status){
+              if (status === 'OK') {
+                addMarker(res[0].geometry.location, lugar);
+                resolve("OK");
+              } else {
+                console.log("Error en getCoord");
+                reject( Error('Geocode no pudo encontrar el lugar porque: ' + status));
+              }
+            });
           }
+          ,1000);
         });
       }
 
-      function initMap() {
-        var uluru = {lat: 19.432618, lng: -99.133210}; // Pin a CDMX (Centro)
+      function getLatLng(index) {
+        var res=[];
+        res[0]=marcadores[index].getPosition().lat();
+        res[1]=marcadores[index].getPosition().lng();
+
+        return res;
+      }
+
+      async function initMap() {
+        var center = {lat: 19.432618, lng: -99.133210}; // Pin a CDMX (Centro)
         map = new google.maps.Map(document.getElementById('map'), {
           zoom:4,
-          center: uluru
+          center: center
+        });
+        await placeDLLMarkers();
+        initDistancias();
+        initDestinos();
+        distXCiudad();
+        // var eg = await dest2Str("Toluca");
+        console.log(distancias);
+        console.log("LISTO!!!!!");
+      }
+
+      async function placeDLLMarkers(){
+        return new Promise(async function(resolve, reject) {
+          for (var i = 0; i < ciudades.length; i++) {
+            var res=await getCoord(ciudades.options[i].text);
+          }
+          setMapOnAll(map);
+          resolve("Listo en placeDLLMarkers");
         });
       }
 
       function getRuta() {
-        deleteMarkers();
+        // deleteMarkers();
 
-        var inicio=document.getElementById('inicio').value;
-        var fin=document.getElementById('fin').value;
+        var ciudIni=document.getElementById('ciudIni');
+        var ciudFin=document.getElementById('ciudFin');
 
-        if (inicio!="" && fin!="") {
-          getCoord(inicio);
-          getCoord(fin);
+        var inicio=ciudIni.options[ciudIni.selectedIndex].text.replace(/ /g,"");
+        var fin=ciudFin.options[ciudFin.selectedIndex].text
+        console.log("Inicio: "+inicio+", Fin: "+fin);
+        var ciudadA=ciudad2Str();
+        var distanciasA=dist2Str();
+        destXCiudad(fin);
+        fin=fin.replace(/ /g,"");
+        var destinosA=dest2Str();
 
-          setMapOnAll(map);
-        }else {
-          alert('Ingresa una(s) ciudad(s)');
+        httpPost('result','ciudades='+ciudadA+'&distancias='+
+          distanciasA+'&destinos='+destinosA+'&inicio='+inicio+'&fin='+fin,function(data){
+            alert(data);
+        });
+      }
+
+      function httpPost(url, arg, callback){
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+          if (this.readyState == 4 && this.status == 200) {
+            callback(this.responseText);
+          }
+        };
+        xhttp.open("POST", url, true);
+        xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        // Se estructura como un GET
+        xhttp.send(arg);
+      }
+
+      function ciudad2Str(){
+        var res="(";
+
+        for (var i = 0; i < ciudades.length; i++) {
+          res+=ciudades.options[i].text.replace(/ /g,"")+' ';
         }
 
+        res=res.substr(0, res.length-1)+')';
+
+        return res;
+      }
+
+      function getDistRect(inicio, fin){
+        var coord1;
+        var coord2;
+
+        coord1=getLatLng(inicio);
+        coord2=getLatLng(fin);
+
+        return Math.sqrt(Math.pow(coord1[0]-coord2[0],2)+Math.pow(coord1[1]-coord2[1],2))*100;
+
+        // getLatLng(fin).then(function(res){
+        //   coord2=res.replace("(","").replace(")","").split(",");
+        // }, function(error){
+        //   console.log(error);
+        // });
+
+      }
+
+      function distXCiudad() {
+        var i=0;
+        var j=0;
+
+        while (i<ciudades.length) {
+          while (j<ciudades.length && i!=j) {
+            var res=getDistRect(ciudades.options[i].value, ciudades.options[j].value);
+            if (res<=60) {
+              distancias[i][j]=res;
+              distancias[j][i]=res;
+            }
+            j++;
+          }
+          j=0;
+          i++;
+        }
+
+      }
+
+      function dist2Str(){
+        var res="(";
+
+        for (distancia of distancias) {
+          res+="(";
+          for (elem of distancia) {
+            res+=elem+" ";
+          }
+          res=res.substr(0, res.length-1)+") ";
+        }
+
+        res=res.substr(0, res.length-1)+")";
+
+        return res;
+      }
+
+      function destXCiudad(fin) {
+        var indice=0;
+        var status=false;
+        var i=0;
+        while(i<ciudades.length&&!status){
+          if(ciudades.options[i].text==fin){
+            status=true;
+            indice=i;
+          }
+          i++
+        }
+        console.log("Indice "+indice);
+        for (var i = 0; i < ciudades.length; i++) {
+          var res= getDistRect(ciudades.options[i].value,indice);
+          destinos[i]=res;
+        }
+
+        return "OK";
+      }
+
+      function dest2Str() {
+        var res="(";
+
+        for (elem of destinos) {
+          res+=elem+" ";
+        }
+
+        res=res.substr(0, res.length-1)+")";
+
+        return res;
       }
 
     </script>
