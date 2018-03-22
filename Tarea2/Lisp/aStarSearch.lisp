@@ -87,7 +87,8 @@
                  "/Users/daniel/Documents/InteligenciaArtificial/Tarea2/solLisp.txt"
                  :direction :output
                  :if-exists :supersede)
-    (print recorrido my-stream)))
+    (print recorrido my-stream)
+    (print km my-stream)))
   ; Recordar que el nodo inicial esta (# padre Nom f(n) SumGDePadre)
 
 (defun rbfs(fin nodo fLimit)
@@ -114,7 +115,7 @@
       ; (print 'mejor)
       ; (print mejor)
       (when (> (fourth mejor) (if (null fLimit) (+ 1 (fourth mejor)) fLimit)) (return-from rbfs (list 'Fallo (fourth mejor))))
-      ; (setq alternativa (segundoMin sucesores mejor))
+      (setq alternativa (segundoMin sucesores mejor))
       ; (print 'alternativa)
       ; (print alternativa)
       (setq resRBFS (rbfs fin mejor (min (if (null fLimit) (+ 1 (fourth alternativa)) fLimit) (fourth alternativa))) resultado (car resRBFS))
@@ -125,6 +126,6 @@
       (setf (fourth mejor) (second resRBFS))
       ; (print (second resRBFS))
       ; (print mejor)
-      (when (not (eql resultado 'Fallo)) (push resultado recorrido) (return-from rbfs (list (third nodo))))))))
+      (when (not (eql resultado 'Fallo)) (setq km (+ (fifth nodo) (buscaDist (third nodo) resultado))) (push resultado recorrido) (return-from rbfs (list (third nodo)))))))
 
 (mejorRuta inicio fin)
