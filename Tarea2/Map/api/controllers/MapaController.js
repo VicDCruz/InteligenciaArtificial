@@ -7,6 +7,7 @@
 
 module.exports = {
 	'fillData':function (req, res){
+		const fs = require('fs');
 
 		// var ciudades=["CDMX", "Toluca", "Querétaro", "Veracruz"];
 
@@ -240,8 +241,13 @@ module.exports = {
 
 		console.log(ciudades.length);
 
+		var completados=[];
+		var faltantes=[];
+
 		return res.view('mapa',{
-			'ciudades':ciudades
+			'ciudades':ciudades,
+			'completados':completados,
+			'faltantes':faltantes
 		});
 	},
 
@@ -276,5 +282,64 @@ module.exports = {
 		});
 
 		// return res.send(req.allParams());
-	}
+	},
+
+	'getCiudades':function(req,res){
+		const fs = require('fs');
+
+		if (typeof(req.param("ciudades"))=="string")
+			var ciudades=JSON.parse(req.param("ciudades"));
+		else
+			var ciudades=req.param("ciudades");
+		var completados=[];
+		var faltantes=[];
+		var cont=0;
+
+		fs.readFile("./assets/files/ciudades.json", function(err, data){
+			var content=JSON.parse(data);
+			// Formato de un elemento del JSON en el arreglo content
+			// {
+			// 	nom:Tlapan,
+			// 	lat:329,
+			// 	lng:382
+			// }
+
+			for (var i = 0; i < ciudades.length; i++){
+				var status=false;
+				var j=0;
+				while (j<content.length && !status) {
+					if(content[j].nom==ciudades[i]){
+						status=true;
+						completados[i]=content[j];
+					}
+					j++;
+				}
+				if (!status) {
+					faltantes[cont]=ciudades[i];
+					cont++
+				}
+			}
+
+			var json={"completados":completados, "faltantes":faltantes};
+			return res.send(JSON.stringify(json))
+		});
+	},
+
+	'updateCiudades':function(req,res){
+		const fs = require('fs');
+
+		var ciudades=req.param("ciudades").toString();
+		ciudades=ciudades.replace("[","").replace("\n","");
+		if (ciudades.charAt(ciudades.length-1)!=']') {
+			ciudades+=']';
+		}
+
+		fs.readFile("./assets/files/ciudades.json",function(err, data){
+			var str=data.toString().replace("]","")+","+ciudades;
+			fs.writeFile("./assets/files/ciudades.json", str, function(err){
+				if(err) throw err;
+				return res.send("OK");
+			});
+		})
+	},
 };

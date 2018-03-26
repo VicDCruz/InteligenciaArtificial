@@ -109,7 +109,7 @@
     (when (null sucesores) (return-from rbfs (list 'Fallo nil)))
     (mapcar #'(lambda (elem) ; CUIDADO puede haber errores, tal vez no se actualice elem al hacer setq
       (setf (fourth elem) (max (fourth nodo) (+ (calcF (third nodo) (third elem)) (fifth nodo))))) sucesores)
-    ; (print sucesores)
+    (print sucesores)
     (loop
       (setq mejor (minimum sucesores))
       ; (print 'mejor)

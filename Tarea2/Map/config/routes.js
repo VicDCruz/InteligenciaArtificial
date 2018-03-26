@@ -47,5 +47,7 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
   '/': 'MapaController.fillData',
-  'POST /result': 'MapaController.result'
+  'POST /result': 'MapaController.result',
+  'POST /getCiudades': 'MapaController.getCiudades',
+  'POST /updateCiudades': 'MapaController.updateCiudades',
 };
