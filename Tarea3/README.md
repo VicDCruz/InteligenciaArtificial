@@ -34,7 +34,7 @@ De PDF:
 
 Es decir, para cada inciso, le ponemos un peso y sumamos cada característica, como en la sig. fórmula:
 
-![alt text]()
+![alt text](https://github.com/VicDCruz/InteligenciaArtificial/blob/dev/Tarea3/FormulaDeEvaluacion.png)
 
 ## Dependencias:
 * LISP
