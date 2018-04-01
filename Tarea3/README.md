@@ -44,7 +44,9 @@ Es decir, para cada inciso, le ponemos un peso y sumamos cada característica, c
 ## Proceso de *Alfa-Beta Pruning*
 Está en la img ./alfaBetaPruning.png
 
-### Referencias
+![alt-text](https://github.com/VicDCruz/InteligenciaArtificial/blob/dev/Tarea3/alfaBetaPruning.png)
+
+# Referencias
 1. [Artificial Intelligence](https://books.google.com.mx/books?id=_ixmRlL9jcIC&pg=PA117&lpg=PA117&dq=weighted+linear+function+checkers&source=bl&ots=JPLF-ToFUZ&sig=IO5g7W3mFUXnvCMscgagHlKq9Fk&hl=es&sa=X&ved=0ahUKEwia99WdrZjaAhVJVK0KHcgxAyAQ6AEIJzAA#v=onepage&q=weighted%20linear%20function%20checkers&f=false)
 2. [Artificial Intelligence Illuminated](https://books.google.com.mx/books?id=LcOLqodW28EC&pg=PA160&lpg=PA160&dq=weighted+linear+function+checkers&source=bl&ots=sXtgcDLDE-&sig=5SCo9xmozkVXBCUUvvbORLLmNlY&hl=es&sa=X&ved=0ahUKEwjS9oaaq5jaAhVPKqwKHVJaA1AQ6AEILjAB#v=onepage&q=weighted%20linear%20function%20checkers&f=false)
 3. [Evolutionary-based heuristic generators for checkers and give-away checkers](https://pdfs.semanticscholar.org/91c9/d140267f3b008d00b330b6b0e9182fa4b62e.pdf) (con función heurística)
