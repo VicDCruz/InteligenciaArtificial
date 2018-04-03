@@ -46,15 +46,15 @@ Ver como árbol:
 (a nil
 
 ((b nil
-  
+
 ((e 12) (f 3) (g 8)))
-    
+
 (c nil
-  
+
 ((h 2) (i 4) (j 6)))
-    
+
 (d nil
-  
+
 ((k 14) (l 2) (m 5)))))
 
 ie: un nodo está compuesto por (INFO Utilidad Sucesores)
@@ -70,3 +70,5 @@ Está en la img ./alfaBetaPruning.png
 2. [Artificial Intelligence Illuminated](https://books.google.com.mx/books?id=LcOLqodW28EC&pg=PA160&lpg=PA160&dq=weighted+linear+function+checkers&source=bl&ots=sXtgcDLDE-&sig=5SCo9xmozkVXBCUUvvbORLLmNlY&hl=es&sa=X&ved=0ahUKEwjS9oaaq5jaAhVPKqwKHVJaA1AQ6AEILjAB#v=onepage&q=weighted%20linear%20function%20checkers&f=false)
 3. [Evolutionary-based heuristic generators for checkers and give-away checkers](https://pdfs.semanticscholar.org/91c9/d140267f3b008d00b330b6b0e9182fa4b62e.pdf) (con función heurística)
 4. [Intro to AI](https://www.cs.rochester.edu/u/kautz/Courses/242spring2014/242ai06-alpha-beta-pruning.pdf) (de donde se obtuvo el ejemplo.lisp)
+
+5. Referencia del formato: [Set4: Game-Playing](http://www.ics.uci.edu/~kkask/Fall-2016%20CS271/slides/04-games.pdf)
