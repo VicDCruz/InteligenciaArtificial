@@ -1,3 +1,4 @@
+; Leemos el archivo que contiene la info. para analizar
 (setq args nil)
 (let ((in (open "/Users/daniel/Documents/InteligenciaArtificial/Tarea2/infoLisp.txt" :if-does-not-exist nil)))
   (when in
@@ -5,9 +6,9 @@
          while line do (push line args))
     (close in)))
 
+; Ruta de inicio y de fin
 (setq inicio (nth 1 args) fin (nth 0 args))
 
-; DUMMY!!!
 ; Se necesita la matriz de distancias para identificar cuáles son las ciudades
 ; que están conectadas a otras
 (defun inicio(dummy)
@@ -59,9 +60,11 @@
       (incf contVecino)) distVecinos))
   (reverse vecinos))
 
+; Obtenemos el cálculo de f(x)=g(x)+h(x)
 (defun calcF(ciudad destino)
   (+ (buscaDist ciudad destino) (third (buscaCiudad destino))))
 
+; Obtenemos el nodo hijo con el valor mínimo de f(x)
 (defun minimum (lst)
   (let (minimo '())
     (setq minimo (car lst))
@@ -69,6 +72,7 @@
       (setq minimo (if (< (fourth minimo) (fourth elem)) minimo elem) )) lst)
   minimo))
 
+; Obtenemos el nodo hijo con el segundo valor mínimo de f(x)
 (defun segundoMin(lst primerMin)
   (let (minimo '())
     (setq minimo (if (not (eq (fourth (car lst)) (fourth primerMin))) (car lst) (cadr lst)))
@@ -77,12 +81,25 @@
       (setq minimo (if (and (< (fourth elem) (fourth minimo)) (> (fourth elem) (fourth primerMin))) elem minimo))) lst)
     minimo))
 
+(defun getKm(recorrido)
+  (cond ((null recorrido) )
+        ((listp recorrido)
+          (cond ((>= (length recorrido) 2)
+                  (incf km (buscaDist (first recorrido) (second recorrido)))
+                  (pop recorrido)
+                  (getKm recorrido))
+            (t km)))
+        (t km))
+)
+
 ; Suponer que NIL = ∞
 (defun mejorRuta(ini fin)
   (inicio nil)
-  (setq contPasos 0)
+  (setq contPasos 0 km 0)
   (rbfs fin (list 1 0 ini (calcF ini ini) 0) nil)
   (push ini recorrido)
+  (getKm recorrido)
+  ; La solución la ponemos en ese archivo:
   (with-open-file (my-stream
                  "/Users/daniel/Documents/InteligenciaArtificial/Tarea2/solLisp.txt"
                  :direction :output
@@ -92,12 +109,7 @@
   ; Recordar que el nodo inicial esta (# padre Nom f(n) SumGDePadre)
 
 (defun rbfs(fin nodo fLimit)
-  ; (print 'EstoyEn)
-  ; (print (third nodo))
-  ; (print 'Limite)
-  ; (print fLimit)
   (incf contPasos)
-  ; (when (eq contPasos 10) (return-from rbfs 'Nada))
   (when (eql fin (third nodo)) (return-from rbfs (list (third nodo))))
   (let ((sucesores '()) (mejor nil))
     (let (hijos '())
@@ -105,27 +117,16 @@
       (mapcar #'(lambda (elem)
         (push (list num (car nodo) elem nil (+ (fifth nodo) (buscaDist (third nodo) elem))) sucesores) ; f(n) se pone después
         (incf num)) hijos))
-    ; (print sucesores)
     (when (null sucesores) (return-from rbfs (list 'Fallo nil)))
-    (mapcar #'(lambda (elem) ; CUIDADO puede haber errores, tal vez no se actualice elem al hacer setq
+    (mapcar #'(lambda (elem)
       (setf (fourth elem) (max (fourth nodo) (+ (calcF (third nodo) (third elem)) (fifth nodo))))) sucesores)
     (print sucesores)
     (loop
       (setq mejor (minimum sucesores))
-      ; (print 'mejor)
-      ; (print mejor)
       (when (> (fourth mejor) (if (null fLimit) (+ 1 (fourth mejor)) fLimit)) (return-from rbfs (list 'Fallo (fourth mejor))))
       (setq alternativa (segundoMin sucesores mejor))
-      ; (print 'alternativa)
-      ; (print alternativa)
       (setq resRBFS (rbfs fin mejor (min (if (null fLimit) (+ 1 (fourth alternativa)) fLimit) (fourth alternativa))) resultado (car resRBFS))
-      ; (print 'RechecarPadre)
-      ; (print nodo)
-      ; (print 'CambioMejor)
-      ; (print mejor)
       (setf (fourth mejor) (second resRBFS))
-      ; (print (second resRBFS))
-      ; (print mejor)
-      (when (not (eql resultado 'Fallo)) (setq km (+ (fifth nodo) (buscaDist (third nodo) resultado))) (push resultado recorrido) (return-from rbfs (list (third nodo)))))))
+      (when (not (eql resultado 'Fallo)) (push resultado recorrido) (return-from rbfs (list (third nodo)))))))
 
 (mejorRuta inicio fin)
