@@ -122,7 +122,7 @@ async function initMap() {
     zoom:4,
     center: center
   });
-  await placeDLLMarkers();
+  await placeDDLMarkers();
   initDistancias();
   initDestinos();
   // var eg = await dest2Str("Toluca");
@@ -132,7 +132,8 @@ async function initMap() {
   // alert("¡LISTO para usarse!");
 }
 
-async function placeDLLMarkers(){
+// Obtenemos los lugares del DDL y los ponemos en el Google Maps
+async function placeDDLMarkers(){
   var progBar=document.getElementById('progressBarFront');
   var tmpC=[];
   var uptC=[];
@@ -178,17 +179,18 @@ async function placeDLLMarkers(){
     }
 
     setMapOnAll(map);
-    resolve("Listo en placeDLLMarkers");
+    resolve("Listo en placeDDLMarkers");
   });
 }
 
+// Obtenemos la distancia en línea recta por LISP y mostramos la solución
 function getRuta() {
   // deleteMarkers();
 
   var distLow=document.getElementById('distLow').value;
   var distHigh=document.getElementById('distHigh').value;
   distXCiudad(Number(distLow),Number(distHigh));
-  
+
   var ciudIni=document.getElementById('ciudIni');
   var ciudFin=document.getElementById('ciudFin');
 
@@ -217,7 +219,17 @@ function getRuta() {
       str=str+"<h2 class='display-4'>Resumen</h2>";
       str=str+'<ol type="A">';
       for (ciudad of result) {
-        str=str+"<li>"+ciudad+"</li>";
+        var j=0;
+        var status=false;
+        while (j<ciudades.length&&!status) {
+          var tmp=ciudades.options[j].text.replace(/ /g,"").toUpperCase();
+          status=(ciudad===tmp);
+          if(!status)
+            j++;
+          else
+            str=str+"<li>"+ciudades.options[j].text+"</li>";
+        }
+
       }
       str=str+"</ol>";
       str=str+"Distancia: "+km+" km";
@@ -226,6 +238,8 @@ function getRuta() {
   });
 }
 
+// Hacemos una consulta a una página para obtener un resultado
+// Más que nada se usa para obtener resultados de páginas locales
 function httpPost(url, arg, callback){
   var xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = function() {
@@ -239,6 +253,7 @@ function httpPost(url, arg, callback){
   xhttp.send(arg);
 }
 
+// Ponemos los nuevos pines de la solución y el polígono que los une
 async function buscaMarcSol(arrSol) {
   labelIndex=0;
   for (var i = 0; i < marcadoresSol.length; i++) {
@@ -296,6 +311,7 @@ async function buscaMarcSol(arrSol) {
 
 }
 
+// Pone el arreglo de ciudades en el formato que pueda interpretar LISP
 function ciudad2Str(){
   var res="(";
 
@@ -308,6 +324,7 @@ function ciudad2Str(){
   return res;
 }
 
+// Obtiene la distancia en línea recta por la fórmula matemática
 function getDistRect(inicio, fin){
   var coord1;
   var coord2;
@@ -325,7 +342,10 @@ function getDistRect(inicio, fin){
 
 }
 
+// Obtenemos la matriz de distancias entre cada ciudad
 function distXCiudad(distLow, distHigh) {
+  initDistancias();
+
   var i=0;
   var j=0;
 
@@ -333,6 +353,7 @@ function distXCiudad(distLow, distHigh) {
     while (j<ciudades.length && i!=j) {
       var res=getDistRect(ciudades.options[i].value, ciudades.options[j].value);
       if (distLow<=res&&res<=distHigh) {
+        console.log("Puse la distancia: "+res);
         distancias[i][j]=res;
         distancias[j][i]=res;
       }
@@ -344,6 +365,7 @@ function distXCiudad(distLow, distHigh) {
 
 }
 
+// Ponemos la matriz de distancias en un formato que LISP pueda interpretar
 function dist2Str(){
   var res="(";
 
@@ -360,6 +382,7 @@ function dist2Str(){
   return res;
 }
 
+// Obtiene un arreglo con la distancia entre cada punto y el destino final
 function destXCiudad(fin) {
   var indice=0;
   var status=false;
@@ -379,6 +402,7 @@ function destXCiudad(fin) {
   return "OK";
 }
 
+// Pone el vector de distancias entre cada punto y el final en un formato que pueda interpretar LISP
 function dest2Str() {
   var res="(";
 

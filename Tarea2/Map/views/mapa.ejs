@@ -14,17 +14,17 @@
         <h2 class="display-4">Coordenadas</h2>
         <h3>Distancia entre puntos (km):</h3>
         <div class="slidecontainer">
-          Inicio: <form oninput="x.value=parseInt(distHigh.value)">
+          MAX: <form oninput="x.value=parseInt(distHigh.value)">
             20<input type="range" id="distHigh" value="40" min="20" max="100">100
             <br>
             <output name="x" for="distHigh">40</output>
           </form>
         </div>
         <div class="slidecontainer">
-          Fin: <form oninput="x.value=parseInt(distLow.value)">
+          MIN: <form oninput="x.value=parseInt(distLow.value)">
             0<input type="range" id="distLow" value="0" min="0" max="100">100
             <br>
-            <output name="x" for="distLow">40</output>
+            <output name="x" for="distLow">0</output>
           </form>
         </div>
         <h3>Inicio:</h3>
