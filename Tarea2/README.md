@@ -1,5 +1,6 @@
+
 # Tarea 2
-Requisitos:
+Requisitos de la tarea:
 
 * Obtener más de 80 ciudades
 * Tener un DDL con las ciudades para Inicio y Fin
@@ -9,19 +10,26 @@ Requisitos:
 * SailsJS
 * LISP
 
+## Inicializar el programa
+1. Antes, revisar que se tenga instalado [SailsJS](https://sailsjs.com) y LISP
+2. En una terminal, ir a la carpeta './Map/'
+3. Poner el comando:
+~~~
+sails lift
+~~~
 
 ## Estructura de las listas:
 1. La relación entre A, B, C y D será: enlistar el nombre de todas las ciudades y su costo: ((A 1) (B 2) (C 3) (D 4))
 
 2. Habrá también una matriz de distancias
 
-|      |      |      |      |      |
-| :------------- | :------------- | :------------- | :------------- |
-|   | A | B | C | D |
+|-| A | B | C | D |
+|--|--|--|--|--|
 | A | 0 | 8 | 1 | 5 |
 | B | 8 | 0 | 7 | 10 |
 | C | 1 | 7 | 0 | 6 |
 | D | 5 | 10 | 6 | 0 |
+
 
 Ya en LISP será (cada fila será una sub-lista):
 ((0 8 1 5)
