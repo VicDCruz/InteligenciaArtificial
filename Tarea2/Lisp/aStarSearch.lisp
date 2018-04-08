@@ -81,6 +81,7 @@
       (setq minimo (if (and (< (fourth elem) (fourth minimo)) (> (fourth elem) (fourth primerMin))) elem minimo))) lst)
     minimo))
 
+; Obtenemos la distancia total entre inicio y fin
 (defun getKm(recorrido)
   (cond ((null recorrido) )
         ((listp recorrido)
