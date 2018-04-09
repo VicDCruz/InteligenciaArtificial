@@ -63,3 +63,5 @@ Está en la img ./alfaBetaPruning.png
 4. [Intro to AI](https://www.cs.rochester.edu/u/kautz/Courses/242spring2014/242ai06-alpha-beta-pruning.pdf) (de donde se obtuvo el ejemplo.lisp)
 
 5. Referencia del formato: [Set4: Game-Playing](http://www.ics.uci.edu/~kkask/Fall-2016%20CS271/slides/04-games.pdf)
+
+6. Formato de damas en JAVA: [Checkers, anyone?](https://www.javaworld.com/article/3014190/learn-java/checkers-anyone.html)
