@@ -10,6 +10,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Point;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseAdapter;
@@ -34,6 +35,9 @@ public class Tablero extends JComponent{
     private int oldcx, oldcy;
     private List<PosDama> posDamas;
     
+    Point p1 = new Point(0, 0);
+    Point p2 = new Point(0, 0);
+    
     public Tablero(){
         this.posDamas = new ArrayList<>();
         this.dimPreferido = new Dimension(TABLERODIM, TABLERODIM);
@@ -53,6 +57,9 @@ public class Tablero extends JComponent{
                         deltax = x - posDama.cx;
                         deltay = y - posDama.cy;
                         agarrado = true;
+                        p1 = me.getPoint();
+                        p2 = p1;
+                        repaint();
                         return;
                     }
                 }
@@ -78,6 +85,8 @@ public class Tablero extends JComponent{
                     }
                 posDama = null;
                 System.out.println(Tablero.this.posDamas.toString());
+                
+                p2 = me.getPoint();
                 repaint();
             }
         });
@@ -126,6 +135,7 @@ public class Tablero extends JComponent{
         if (posDama != null) {
             posDama.dama.dibuja(g, posDama.cx, posDama.cy);
         }
+        g.drawRect(p1.x, p1.y, p2.x, p2.y);
     }
     
     private void pintaTableroDamas(Graphics g){
