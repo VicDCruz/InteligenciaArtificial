@@ -8,6 +8,11 @@ Requisitos:
 
 Basado en el [juego de Damas](http://www.coolmath-games.com/0-checkers)
 
+## Para ejecutar `./mergeLispFiles.sh`
+* Verificar que tenga permisos de ejecución en el grupo (ie. `x`)
+  * Sino es así, ejecutar `$ chmod +x ./mergeLispFiles.sh`
+* Para correr el archivo shell: `$ ./mergeLispFiles.sh`
+
 ## Weighted Linear Function
 Hay 2 tipos de fichas:
 
@@ -20,17 +25,19 @@ Podemos:
   * El balanceo del tablero (distribución de piezas entre el lado izquierdo y derecho)
   * Número de reyes atrapados
 
-De PDF:
+De PDF (**Funciones HEURÍSTICAS**):
 
-
-1. Number of pawns;
-2. Number of kings;
-3. Number of safe pawns (i.e. adjacent to the edge of the board);
-4. Number of safe kings;
-5. Number of moveable pawns (i.e. able to perform a move other than capturing).
-6. Number of moveable kings. Parameters 5 and 6 are calculated taking no notice of capturing priority;
-7. Aggregated distance of the pawns to promotion line;
-8. Number of unoccupied fields on promotion line.
+1. Number of defender pieces2 (i.e. the ones situated in two lowermost rows);
+2. Number of attacking pawns (i.e. positioned in three topmost rows);
+3. Number of centrally positioned pawns (i.e. situated on the eight central squares of the board);
+4. Number of centrally positioned kings;
+5. Number of pawns positioned on the main diagonal;
+6. Number of kings positioned on the main diagonal;
+7. Number of pawns situated on double diagonal;
+8. Number of kings situated on double diagonal;
+9. Number of loner pawns. Loner piece is defined as the one not adjacent to any other piece
+10. Number of loner kings;
+11. Number of holes, i.e. empty squares adjacent to at least three pieces of the same color.
 
 Es decir, para cada inciso, le ponemos un peso y sumamos cada característica, como en la sig. fórmula:
 
@@ -38,6 +45,7 @@ Es decir, para cada inciso, le ponemos un peso y sumamos cada característica, c
 
 ## Dependencias:
 * LISP
+* JAVA
 
 ## Estructura de las listas:
 Ver como árbol:
@@ -49,6 +57,20 @@ Ver como árbol:
 ('d nil (('k 14) ('l 2) ('m 5)))))
 
 ie: un nodo está compuesto por (INFO Utilidad Sucesores)
+
+### Dentro de INFO
+* Con dos *arreglos* de los jugadores o colores
+  * Fichas negras
+  * Fichas rojas
+* Dentro de cada *arreglo* de los colores
+  * Lista de las posiciones de cada peón de ambos jugadores (¿Qué lugar ocupan en el tablero?)
+  * Lista de las posiciones de cada rey de ambos jugadores
+* Dentro de cada tipo de ficha
+  * Posición de cada ficha
+
+Tablero de donde nos vamos a basar
+![alt-text](https://docs.kde.org/trunk5/es/extragear-games/knights/Knights-board.png)
+
 
 
 ## Proceso de *Alfa-Beta Pruning*
