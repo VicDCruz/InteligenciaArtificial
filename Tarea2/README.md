@@ -1,5 +1,11 @@
 
 # Tarea 2
+Integrantes:
+* Mario Ivan Montes Vidal
+* Rebeca Baños García
+* Alejandra Mazatle Osorio
+* Víctor Daniel Cruz González
+
 Requisitos de la tarea:
 
 * Obtener más de 80 ciudades
