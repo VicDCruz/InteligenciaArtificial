@@ -27,7 +27,7 @@ Podemos:
 
 De PDF (**Funciones HEURÍSTICAS**):
 
-1. Number of defender pieces2 (i.e. the ones situated in two lowermost rows);
+1. Number of defender pieces (i.e. the ones situated in two lowermost rows);
 2. Number of attacking pawns (i.e. positioned in three topmost rows);
 3. Number of centrally positioned pawns (i.e. situated on the eight central squares of the board);
 4. Number of centrally positioned kings;
@@ -51,14 +51,25 @@ Es decir, para cada inciso, le ponemos un peso y sumamos cada característica, c
 Ver como árbol:
 ![alt text](https://github.com/VicDCruz/InteligenciaArtificial/blob/dev/Tarea3/ejemplo.png)
 
-'('a nil
-(('b nil (('e 12) ('f 3) ('g 8)))
-('c nil (('h 2) ('i 4) ('j 6)))
-('d nil (('k 14) ('l 2) ('m 5)))))
+n1 -> (( 1 a 3 ))
+
+n2 -> ( 1 ( 2 b 3 ) ( 3 c 2 ) ( 4 d 2 ))
+
+n3 -> ( 2 ( 5 e 12) ( 6 f 3 ) ( 7 g 8 )
+        3 ( 8 e 2) ( 9 f 4 ) ( 10 g 6 )
+        4 ( 11 e 14) ( 12 f 2 ) ( 13 g 5 ))
 
 ie: un nodo está compuesto por (INFO Utilidad Sucesores)
 
 ### Dentro de INFO
+EG: INFO(
+          NEGRO(
+                PEÓN( 1 2 3 4 )
+                REY( 5 6 ))
+          ROJO(
+                PEÓN( 11 12 13 14 )
+                REY( 20 ))))
+
 * Con dos *arreglos* de los jugadores o colores
   * Fichas negras
   * Fichas rojas
@@ -69,7 +80,8 @@ ie: un nodo está compuesto por (INFO Utilidad Sucesores)
   * Posición de cada ficha
 
 Tablero de donde nos vamos a basar
-![alt-text](https://docs.kde.org/trunk5/es/extragear-games/knights/Knights-board.png)
+
+![alt-text](https://github.com/VicDCruz/InteligenciaArtificial/blob/dev/Tarea3/indiceTablero.png)
 
 
 
