@@ -45,4 +45,19 @@ public final class Dama {
     public static int getDimension(){
       return DIMENSION;
    }   
+
+    public TipoDamas getTipoDamas() {
+        return tipoDamas;
+    }
+
+    public void setTipoDamas(TipoDamas tipoDamas) {
+        this.tipoDamas = tipoDamas;
+    }
+
+    @Override
+    public String toString() {
+        return "Dama{" + "tipoDamas=" + tipoDamas + '}';
+    }
+    
+    
 }

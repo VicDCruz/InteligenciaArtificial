@@ -7,6 +7,7 @@ package damas;
 
 import java.awt.EventQueue;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,7 +20,9 @@ public class Damas extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         Tablero tablero = new Tablero();
+        tablero.add(new Dama(TipoDamas.RED_REGULAR), 1, 2);
         tablero.add(new Dama(TipoDamas.RED_REGULAR), 4, 1);
+        tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 3, 2);
         tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 6, 3);
         tablero.add(new Dama(TipoDamas.RED_KING), 5, 6);
         
@@ -43,6 +46,7 @@ public class Damas extends JFrame{
     }
     
     public static void main(String[] args){
+        
       Runnable r = new Runnable(){
                       @Override
                       public void run(){
