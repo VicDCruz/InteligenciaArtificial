@@ -20,25 +20,25 @@ public class Damas extends JFrame{
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         
         Tablero tablero = new Tablero();
-        tablero.add(new Dama(TipoDamas.RED_REGULAR), 1, 2);
-        tablero.add(new Dama(TipoDamas.RED_REGULAR), 4, 1);
-        tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 3, 2);
-        tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 6, 3);
-        tablero.add(new Dama(TipoDamas.RED_KING), 5, 6);
+//        tablero.add(new Dama(TipoDamas.RED_REGULAR), 1, 2);
+//        tablero.add(new Dama(TipoDamas.RED_REGULAR), 4, 1);
+//        tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 3, 2);
+//        tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 6, 3);
+//        tablero.add(new Dama(TipoDamas.RED_KING), 5, 6);
         
-//        for (int x = 2; x < 9; x+=2)
-//            tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 1, x);
-//        for (int x = 1; x < 9; x+=2)
-//            tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 2, x);
-//        for (int x = 2; x < 9; x+=2)
-//            tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 3, x);
-//        
-//        for (int x = 1; x < 9; x+=2)
-//            tablero.add(new Dama(TipoDamas.RED_REGULAR), 6, x);
-//        for (int x = 2; x < 9; x+=2)
-//            tablero.add(new Dama(TipoDamas.RED_REGULAR), 7, x);
-//        for (int x = 1; x < 9; x+=2)
-//            tablero.add(new Dama(TipoDamas.RED_REGULAR), 8, x);
+        for (int x = 2; x < 9; x+=2)
+            tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 1, x);
+        for (int x = 1; x < 9; x+=2)
+            tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 2, x);
+        for (int x = 2; x < 9; x+=2)
+            tablero.add(new Dama(TipoDamas.BLACK_REGULAR), 3, x);
+        
+        for (int x = 1; x < 9; x+=2)
+            tablero.add(new Dama(TipoDamas.RED_REGULAR), 6, x);
+        for (int x = 2; x < 9; x+=2)
+            tablero.add(new Dama(TipoDamas.RED_REGULAR), 7, x);
+        for (int x = 1; x < 9; x+=2)
+            tablero.add(new Dama(TipoDamas.RED_REGULAR), 8, x);
         setContentPane(tablero);
         
         pack();

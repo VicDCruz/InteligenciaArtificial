@@ -1,0 +1,16 @@
+; Obtenemos la heurística total con las funciones que checa
+; diferentes posiciones de las Damas
+(defun utility (state)
+  (let ((info (second state)))
+    (+ (* 3 (attackingPawns info))
+      (* 3 (centralKings info))
+      (* 1 (centralPawns info))
+      (* 2 (defenderPieces info))
+      (* 1 (diagonalPawns info))
+      (* 1 (holes info))
+      (* 1 (kingsDoubleDiagonal info))
+      (* 1 (kingsMainDiagonal info))
+      (* 2 (lonerKings info))
+      (* 2 (lonerPawns info))
+      (* 1 (pawnsDoubleDiagonal info))
+      (* 3 (eatsRival info (fourth state))))))

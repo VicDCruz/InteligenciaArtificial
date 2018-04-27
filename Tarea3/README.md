@@ -1,8 +1,6 @@
 # Tarea 3
 Requisitos:
 
-* Tener un tablero interactivo que muestre el tiempo, el turno, …
-  * Se pueden comer >=1 ficha(s) en un mismo movimiento
 * Implementar Alfa-Beta Pruning
 * Usar el juego de damas (checkers)
 
@@ -59,7 +57,7 @@ n3 -> ( 2 ( 5 e 12) ( 6 f 3 ) ( 7 g 8 )
         3 ( 8 e 2) ( 9 f 4 ) ( 10 g 6 )
         4 ( 11 e 14) ( 12 f 2 ) ( 13 g 5 ))
 
-ie: un nodo está compuesto por (INFO Utilidad Sucesores)
+ie: un nodo está compuesto por (# INFO Utilidad Nivel)
 
 ### Dentro de INFO
 EG: INFO(
@@ -84,7 +82,6 @@ Tablero de donde nos vamos a basar
 ![alt-text](https://github.com/VicDCruz/InteligenciaArtificial/blob/dev/Tarea3/indiceTablero.png)
 
 
-
 ## Proceso de *Alfa-Beta Pruning*
 Está en la img ./alfaBetaPruning.png
 
@@ -99,3 +96,5 @@ Está en la img ./alfaBetaPruning.png
 5. Referencia del formato: [Set4: Game-Playing](http://www.ics.uci.edu/~kkask/Fall-2016%20CS271/slides/04-games.pdf)
 
 6. Formato de damas en JAVA: [Checkers, anyone?](https://www.javaworld.com/article/3014190/learn-java/checkers-anyone.html)
+
+7. Ejemplo de cómo generar el árbo: [Game Theory - Minimax search and Alfa-Beta Pruning](https://www.math.kth.se/matstat/gru/sf2972/2011/lecture14.pdf)

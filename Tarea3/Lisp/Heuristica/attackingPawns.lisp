@@ -2,8 +2,6 @@
 ; piezas que están en las casilas [9 , 12] y [21 , 24]
 (defun attackingPawns (info)
   (setq res 0 black (first (first info)) red (first (second info)))
-  (print black)
-  (print red)
   ; Para BLACK
   (mapcar #'(lambda (elem)
     (if (and (>= elem 9) (<= elem 12))
