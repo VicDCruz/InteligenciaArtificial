@@ -4,7 +4,8 @@
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -28,3 +29,6 @@ Temporary Items
 # Mis archivos
 infoLisp.txt
 solLisp.txt
+/Tarea3/Damas/nbproject/private/
+/Tarea3/Damas/dist/
+/Tarea3/Damas/build/
