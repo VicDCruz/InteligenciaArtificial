@@ -12,10 +12,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 /**
+ * @author Víctor Cruz
  * Clase que permite obtener las relaciones entre cursos y
  * crear una tabla con horarios óptimos.
- * @author Víctor Cruz
- *
  */
 public class Calendario {
 	/**
@@ -30,6 +29,7 @@ public class Calendario {
 	 * Total de elementos de cada conjunto.
 	 */
 	private int[] numberCourses;
+	private int maxNumberSchedules;
 
 	/**
 	 * Constructor de Calendario.
@@ -42,6 +42,20 @@ public class Calendario {
 		this.setRelations(relations);
 		this.numberCourses = new int[this.courses.size()];
 		this.setNumberCourses();
+		this.maxNumberSchedules = 0;
+	}
+	
+	public String getSolution() {
+		String res = "";
+		int cont = 0;
+		ResolutionEnumeration re = new ResolutionEnumeration(this.nameCourses,
+				this.numberCourses, this.courses, this.maxNumberSchedules);
+		re.solve();
+		for(int group: re.getGroups()) {
+			res += this.nameCourses.get(cont) + ": " + group + "\n";
+			cont++;
+		}
+		return res;
 	}
 
 	/**
@@ -104,6 +118,10 @@ public class Calendario {
 			cont++;
 		}
 	}
+	
+	public void setMaxNumberSchedules(int newMax) {
+		this.maxNumberSchedules = newMax;
+	}
 
 	/**
 	 * Imprimimos el número de conexiones entre cada nodo.
@@ -130,6 +148,8 @@ public class Calendario {
 		Calendario c = new Calendario(relacion);
 		System.out.println(c.getCourses());
 		System.out.println(c.getNumberCourses());
+		c.setMaxNumberSchedules(2);
+		System.out.println(c.getSolution());
 	}
 
 }
