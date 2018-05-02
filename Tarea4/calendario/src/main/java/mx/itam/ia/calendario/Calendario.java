@@ -7,6 +7,7 @@ package mx.itam.ia.calendario;
  * Importaciones de JAVA
  */
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -28,8 +29,10 @@ public class Calendario {
 	/**
 	 * Total de elementos de cada conjunto.
 	 */
-	private int[] numberCourses;
+	private int[] numberCourses, blockedGroups;
 	private int maxNumberSchedules;
+
+	private ResolutionEnumeration re;
 
 	/**
 	 * Constructor de Calendario.
@@ -44,16 +47,26 @@ public class Calendario {
 		this.setNumberCourses();
 		this.maxNumberSchedules = 0;
 	}
-	
-	public String getSolution() {
-		String res = "";
-		int cont = 0;
-		ResolutionEnumeration re = new ResolutionEnumeration(this.nameCourses,
+
+	public void setBloquedGroups(int[] groups) {
+		this.blockedGroups = groups;
+	}
+
+	public String[] getSolution() {
+		String[] res;
+		re = new ResolutionEnumeration(this.nameCourses,
 				this.numberCourses, this.courses, this.maxNumberSchedules);
+		re.setBloquedGroups(this.blockedGroups);
 		re.solve();
-		for(int group: re.getGroups()) {
-			res += this.nameCourses.get(cont) + ": " + group + "\n";
-			cont++;
+		int[] groups = re.getGroups();
+		int max = Arrays.stream(groups).max().getAsInt();
+		res = new String[max];
+		System.out.println(max);
+		for(int i = 0; i < max; i++) {
+			res[i] = "";
+		}
+		for(int i = 0; i < groups.length; i++) {
+			res[groups[i]-1] += this.nameCourses.get(i)+",";
 		}
 		return res;
 	}
@@ -88,6 +101,10 @@ public class Calendario {
 		}
 	}
 
+	public void setRestriction(String[] restriction) {
+		this.setRelations(restriction);
+	}
+
 	/**
 	 * Imprimimos la relación entre cursos.
 	 * @return Cadena con las relaciones.
@@ -104,7 +121,11 @@ public class Calendario {
 			}
 			res += "\n";
 		}
-		return res;
+		return res.substring(0,res.length()-2);
+	}
+
+	public String[] getNameCourses() {
+		return this.nameCourses.toArray(new String[this.nameCourses.size()]);
 	}
 
 	/**
@@ -118,7 +139,7 @@ public class Calendario {
 			cont++;
 		}
 	}
-	
+
 	public void setMaxNumberSchedules(int newMax) {
 		this.maxNumberSchedules = newMax;
 	}
@@ -148,8 +169,11 @@ public class Calendario {
 		Calendario c = new Calendario(relacion);
 		System.out.println(c.getCourses());
 		System.out.println(c.getNumberCourses());
-		c.setMaxNumberSchedules(2);
-		System.out.println(c.getSolution());
+		// c.setMaxNumberSchedules(2);
+		// String[] sol = c.getSolution();
+		// for(int i = 0; i < sol.length; i++) {
+		// 	System.out.println(i+1+": "+sol[i]);
+		// }
 	}
 
 }

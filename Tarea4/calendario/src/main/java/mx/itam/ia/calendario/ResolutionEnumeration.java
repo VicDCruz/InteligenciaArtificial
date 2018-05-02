@@ -25,10 +25,26 @@ public class ResolutionEnumeration {
 	 * Arreglo con los grupos.
 	 */
 	private List<Set<String>> connections;
+	/**
+	 * 
+	 */
 	private List<Set<Integer>> bloquedGroups;
+	/**
+	 * 
+	 */
 	private int[] groups;
+	/**
+	 * 
+	 */
 	private int maxSpace;
 
+	/**
+	 * 
+	 * @param nameNodes
+	 * @param numberConnections
+	 * @param connections
+	 * @param maxSpace
+	 */
 	public ResolutionEnumeration(List<String> nameNodes,
 			int[] numberConnections,
 			List<Set<String>> connections,
@@ -37,17 +53,34 @@ public class ResolutionEnumeration {
 		this.numberConnections = numberConnections;
 		this.connections = connections;
 		this.bloquedGroups = new ArrayList<Set<Integer>>();
-		for(int i = 0; i < this.connections.size(); i++) {
+		for (int i = 0; i < this.connections.size(); i++) {
 			this.bloquedGroups.add(new TreeSet<Integer>());
 		}
 		groups = new int[this.connections.size()];
 		this.maxSpace = maxSpace;
 	}
 	
+	public void setBloquedGroups(int[] groups) {
+		int cont = 0;
+		for(int block: groups) {
+			for(int i = 1; i < block; i++) {
+				this.bloquedGroups.get(cont).add(i);
+			}
+			cont++;
+		}
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public int[] getGroups() {
 		return groups;
 	}
 
+	/**
+	 * 
+	 */
 	public void solve() {
 		while (!finish()) {
 			int maxNode = this.getMaxNode();
@@ -57,6 +90,10 @@ public class ResolutionEnumeration {
 		}
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	private boolean finish() {
 		for (int connection: this.numberConnections) {
 			if (connection != -1) {
@@ -66,6 +103,10 @@ public class ResolutionEnumeration {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param maxNode
+	 */
 	private void addToGroup(int maxNode) {
 		boolean isPlaced = false;
 		int group = 1;
@@ -80,6 +121,12 @@ public class ResolutionEnumeration {
 		}
 	}
 
+	/**
+	 * 
+	 * @param maxNode
+	 * @param group
+	 * @return
+	 */
 	private boolean freeToPlace(int maxNode, int group) {
 		int cont = 0;
 		if (maxNode >= this.bloquedGroups.size()) {
@@ -89,7 +136,7 @@ public class ResolutionEnumeration {
 				if (tmpGroup == group) {
 					cont++;
 				}
-				if (cont >= this.maxSpace) {
+				if (cont >= this.maxSpace && this.maxSpace > 0) {
 					return false;
 				}
 			}
@@ -98,19 +145,28 @@ public class ResolutionEnumeration {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	private int getMaxNode() {
 		int maxNode = 0;
 		for (int i = 0; i < this.numberConnections.length; i++) {
 			if (this.numberConnections[i] > this.numberConnections[maxNode]) {
 				maxNode = i;
 			}
-			if(this.numberConnections[i] == 0) {
+			if (this.numberConnections[i] == 0) {
 				return i;
 			}
 		}
 		return maxNode;
 	}
 
+	/**
+	 * 
+	 * @param node
+	 * @param group
+	 */
 	public void removeNode(String node, int group) {
 		int contNode = 0;
 		for (Set<String> connection: connections) {
@@ -123,6 +179,11 @@ public class ResolutionEnumeration {
 		}
 	}
 
+	/**
+	 * 
+	 * @param group
+	 * @param node
+	 */
 	private void blockGroup(int group, int node) {
 		this.bloquedGroups.get(node).add(group);
 	}

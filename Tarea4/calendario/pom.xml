@@ -35,11 +35,15 @@
               <goal>java</goal>
             </goals>
             <configuration>
-              <mainClass>mx.itam.ia.calendario.Calendario</mainClass>
+              <mainClass>mx.itam.ia.calendario.GUI</mainClass>
             </configuration>
           </execution>
         </executions>
       </plugin>
   	</plugins>
   </build>
+  <properties>
+    <maven.compiler.source>1.8.1</maven.compiler.source>
+    <maven.compiler.target>1.8.1</maven.compiler.target>
+  </properties>
 </project>
