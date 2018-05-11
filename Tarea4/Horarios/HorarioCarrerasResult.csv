@@ -1,6 +1,7 @@
 Hora,Lunes,Martes,Miercoles,Jueves,Viernes
-07:00,PM2,IA,PM2,IA,ADSI
-08:00,,SI,,,
-09:00,,PDS/FMC2/Calculo3,,PDS/FMC2/Calculo3,PDS
-10:00,,FMC1/ECO,,FMC1/ECO,
-11:00,,PM1,,PM1,
+07:00,PM2,Calculo3,PM2,Calculo3,
+08:00,,IA,,IA,ADSI
+09:00,,SI,,,
+10:00,,PDS/ECO,,PDS/ECO,PDS
+11:00,,FMC1/FMC2,,FMC1/FMC2,
+12:00,,PM1,,PM1,
