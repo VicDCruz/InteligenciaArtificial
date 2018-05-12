@@ -52,6 +52,8 @@ public class GUI {
 	private JScrollPane scrollPane_1;
 	private String[] csvHorario;
 	private String[] csvRestriccion = null;
+	private JTextField txtRelaciones;
+	private boolean isRelation = false;
 
 	/**
 	 * Launch the application.
@@ -93,6 +95,7 @@ public class GUI {
 					if(!of.getPath().substring(of.getPath().length()-3, of.getPath().length()).equals("csv")) {
 						JOptionPane.showMessageDialog(null, "Ingresar un CSV", "Archivo no compatible", JOptionPane.INFORMATION_MESSAGE);
 					} else {
+						isRelation = false;
 						initialPath = of.getPath();
 						txtMaterias.setText(of.getPath());
 						csvHorario = of.parseCsv(of.getSb().toString());
@@ -130,7 +133,7 @@ public class GUI {
 		
 		txtProfesores = new JTextField();
 		txtProfesores.setColumns(10);
-		txtProfesores.setBounds(12, 80, 209, 19);
+		txtProfesores.setBounds(12, 67, 209, 19);
 		frame.getContentPane().add(txtProfesores);
 		
 		btnProfesor = new JButton("Profesores");
@@ -155,9 +158,45 @@ public class GUI {
 				}
 			}
 		});
-		btnProfesor.setBounds(231, 73, 144, 25);
+		btnProfesor.setBounds(231, 67, 144, 25);
 		frame.getContentPane().add(btnProfesor);
 		frame.getContentPane().add(btnMaterias);
+		
+		txtRelaciones = new JTextField();
+		txtRelaciones.setBounds(12, 100, 209, 19);
+		txtRelaciones.setColumns(10);
+		frame.getContentPane().add(txtRelaciones);
+		
+		JButton btnRelaciones = new JButton("Relaciones");
+		btnRelaciones.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent ae) {
+				try {
+					of.pickMe();
+					if(!of.getPath().substring(of.getPath().length()-3, of.getPath().length()).equals("csv")) {
+						JOptionPane.showMessageDialog(null, "Ingresar un CSV", "Archivo no compatible", JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						isRelation = true;
+						initialPath = of.getPath();
+						txtRelaciones.setText(of.getPath());
+						csvHorario = of.getSb().toString().replaceAll(",", "-").split("\n");
+						for(String elem: csvHorario) {
+							System.out.println(elem);
+						}
+						c = new Calendario(csvHorario);
+						String courses = c.getCourses();
+						String[] nameCourses = c.getNameCourses();
+						txtArea.setText(courses);
+						for(int i = 0; i< c.getNameCourses().length; i++) {
+							model.insertRow(i, new Object[] {nameCourses[i], 1+""});
+						}
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		btnRelaciones.setBounds(231, 100, 144, 25);
+		frame.getContentPane().add(btnRelaciones);
 		
 		JButton btnProcesar = new JButton("Procesar");
 		btnProcesar.addActionListener(new ActionListener() {
@@ -172,46 +211,54 @@ public class GUI {
 					restriccionHorario[i] = Integer.parseInt(model.getValueAt(i, 1).toString());
 				}
 				c.setBloquedGroups(restriccionHorario);
-				String calendar = of.createCalendar(c.getSolution());
-				System.out.println(calendar);
-				if (of.createCsvCalendar(calendar, initialPath)) {
-					JOptionPane.showMessageDialog(null, "CSV creado con éxito en "+initialPath.substring(0, initialPath.length()-4)+"Result.csv", "Creación de calendario", JOptionPane.INFORMATION_MESSAGE);
-				} else {
-					JOptionPane.showMessageDialog(null, "Error, revisar solución de ARE", "Creación de calendario", JOptionPane.INFORMATION_MESSAGE);
-				}
-				StringBuilder sb = new StringBuilder();
-				Scanner input;
-				try {
-					input = new Scanner(new File(initialPath.substring(0, initialPath.length()-4)+"Result.csv"));
-					while(input.hasNext()) {
-						sb.append(input.nextLine());
-						sb.append("\n");
+				if (!isRelation) {
+					String calendar = of.createCalendar(c.getSolution());
+					System.out.println(calendar);
+					if (of.createCsvCalendar(calendar, initialPath)) {
+						JOptionPane.showMessageDialog(null, "CSV creado con éxito en "+initialPath.substring(0, initialPath.length()-4)+"Result.csv", "Creación de calendario", JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null, "Error, revisar solución de ARE", "Creación de calendario", JOptionPane.INFORMATION_MESSAGE);
 					}
-					input.close();
-					for(int i = model1.getRowCount()-1; i >= 0; i--) {
-						model1.removeRow(i);
-					}
-					String[] horario = sb.toString().split("\n");
-					for(int i = 1; i < horario.length; i++) {
-						String[] elems = horario[i].split(",");
-						if (elems.length < 6) {
-							String[] tmpElems = new String[6];
-							for(int j = 0; j < 6; j++) {
-								tmpElems[j] = "";
-							}
-							for(int j = 0; j < elems.length; j++) {
-								tmpElems[j] = elems[j];
-							}
-							elems = new String[6];
-							for(int j = 0; j < tmpElems.length; j++) {
-								elems[j] = tmpElems[j];
-							}
+					StringBuilder sb = new StringBuilder();
+					Scanner input;
+					try {
+						input = new Scanner(new File(initialPath.substring(0, initialPath.length()-4)+"Result.csv"));
+						while(input.hasNext()) {
+							sb.append(input.nextLine());
+							sb.append("\n");
 						}
-						model1.insertRow(i-1, elems);
+						input.close();
+						for(int i = model1.getRowCount()-1; i >= 0; i--) {
+							model1.removeRow(i);
+						}
+						String[] horario = sb.toString().split("\n");
+						for(int i = 1; i < horario.length; i++) {
+							String[] elems = horario[i].split(",");
+							if (elems.length < 6) {
+								String[] tmpElems = new String[6];
+								for(int j = 0; j < 6; j++) {
+									tmpElems[j] = "";
+								}
+								for(int j = 0; j < elems.length; j++) {
+									tmpElems[j] = elems[j];
+								}
+								elems = new String[6];
+								for(int j = 0; j < tmpElems.length; j++) {
+									elems[j] = tmpElems[j];
+								}
+							}
+							model1.insertRow(i-1, elems);
+						}
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				} else {
+					if (of.createTxtGroups(c.getSolution(), initialPath)) {
+						JOptionPane.showMessageDialog(null, "TXT creado con éxito en "+initialPath.substring(0, initialPath.length()-4)+"Result.txt", "Creación de grupos", JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						JOptionPane.showMessageDialog(null, "Error, revisar solución de ARE", "Creación de calendario", JOptionPane.INFORMATION_MESSAGE);
+					}
 				}
 			}
 		});

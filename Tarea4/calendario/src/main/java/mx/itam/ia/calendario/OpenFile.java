@@ -214,6 +214,36 @@ public class OpenFile {
 		return res;
 	}
 
+	public boolean createTxtGroups(String[] groups, String path) {
+		boolean res = false;
+		String groupsStr = "";
+		BufferedWriter bw = null;
+		FileWriter fw = null;
+		int cont = 1;
+		for(String group: groups) {
+			groupsStr += "GRUPO "+cont+": "+group.substring(0, group.length()-1)+"\n";
+			cont++;
+		}
+		try {
+			fw = new FileWriter(path.substring(0, path.length()-4)+"Result.txt");
+			bw = new BufferedWriter(fw);
+			bw.write(groupsStr);
+			res = true;
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (bw != null)
+					bw.close();
+				if (fw != null)
+					fw.close();
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return res;
+	}
+	
 	public boolean createCsvCalendar(String calendar, String path) {
 		boolean res = false;
 		BufferedWriter bw = null;
