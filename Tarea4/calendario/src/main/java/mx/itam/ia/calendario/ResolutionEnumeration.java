@@ -4,6 +4,7 @@
 package mx.itam.ia.calendario;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -88,6 +89,69 @@ public class ResolutionEnumeration {
 			this.connections.get(maxNode).clear();
 			this.addToGroup(maxNode);
 		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void optimize(int[] startedBloquedGroups) {
+		int max = Arrays.stream(groups).max().getAsInt();
+		int[] formedGroups = new int[max];
+		Set<Integer> oddPositions = new TreeSet<Integer>();
+		for (int group: groups) {
+			formedGroups[group - 1]++;
+		}
+		for (int group: groups) {
+			if (formedGroups[group - 1] == 1) {
+				oddPositions.add(group - 1);
+			}
+		}
+		if (oddPositions.size() > 1) {
+			int lastGroup = (int) oddPositions.toArray()[0] + 1;
+			int firstGroup = (int) oddPositions.toArray()[oddPositions.size()-1] + 1;
+			for (Object tmpPosition: oddPositions.toArray()) {
+				int position = (int) tmpPosition + 1;
+				if (position >= lastGroup) {
+					lastGroup = position;
+				}
+				if (position <= firstGroup) {
+					firstGroup = position;
+				}
+			}
+			int elementOfLastGroup = getIndexOfElementsOfGroup(lastGroup)[0];
+			int startFrom = startedBloquedGroups[elementOfLastGroup];
+			boolean hasChangedGroup = false;
+			for (int i = startFrom; i < groups.length; i++) {
+				int[] elementsOfGroup = getIndexOfElementsOfGroup(i);
+				for(int element: elementsOfGroup) {
+					if(!connections.get(elementOfLastGroup).contains(nameNodes.get(element))
+							&& !bloquedGroups.get(element).contains(firstGroup)) {
+						groups[elementOfLastGroup] = groups[element];
+						groups[element] = firstGroup;
+						hasChangedGroup = true;
+					}
+					if (hasChangedGroup) {
+						break;
+					}
+				}
+				if (hasChangedGroup) {
+					break;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private int[] getIndexOfElementsOfGroup(int group) {
+		List<Integer> res = new ArrayList<Integer>();
+		for(int i = 0; i < groups.length; i++) {
+			if (groups[i] == group) {
+				res.add(i);
+			}
+		}
+		return res.stream().mapToInt(i -> i).toArray();
 	}
 	
 	/**

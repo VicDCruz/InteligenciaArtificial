@@ -58,6 +58,7 @@ public class Calendario {
 				this.numberCourses, this.courses, this.maxNumberSchedules);
 		re.setBloquedGroups(this.blockedGroups);
 		re.solve();
+		re.optimize(this.blockedGroups);
 		int[] groups = re.getGroups();
 		int max = Arrays.stream(groups).max().getAsInt();
 		res = new String[max];
