@@ -5,16 +5,39 @@ import pandas as pd
 
 print("\nInitializing AlTD…")
 
-TRAIN_PATH = "/Users/daniel/Documents/InteligenciaArtificial/Tarea5/DeepLearning/ticketData.csv"
-TEST_PATH = "/Users/daniel/Documents/InteligenciaArtificial/Tarea5/DeepLearning/ticketDataTest.csv"
+TRAIN_PATH = "/Users/daniel/Documents/InteligenciaArtificial/Tarea5/DeepLearning/students.csv"
+TEST_PATH = "/Users/daniel/Documents/InteligenciaArtificial/Tarea5/DeepLearning/studentsTest.csv"
 
 CSV_COLUMN_NAMES = [
-                        "ORIGIN_AIRPORT_ID",
-                        "ROUNDTRIP",
-                        "ONLINE",
-                        "PASSENGERS",
-                        "MILES_FLOWN",
-                        "ITIN_FARE"
+                        "sex",
+                        "age",
+                        "address",
+                        "famsize",
+                        "Pstatus",
+                        "Medu",
+                        "Fedu",
+                        "Mjob",
+                        "Fjob",
+                        "reason",
+                        "guardian",
+                        "traveltime",
+                        "studytime",
+                        "failures",
+                        "famsup",
+                        "paid",
+                        "activities",
+                        "internet",
+                        "romantic",
+                        "famrel",
+                        "freetime",
+                        "goout",
+                        "Dalc",
+                        "Walc",
+                        "health",
+                        "absences",
+                        "G1",
+                        "G2",
+                        "G3"
                     ]
 
 print("Collecting CSV column names")
@@ -29,7 +52,7 @@ def getFiles():
                                         origin = TEST_PATH)
     return trainPath, testPath
 
-def loadData(labelName = "ITIN_FARE"):
+def loadData(labelName = "G3"):
     """Parse the data in train and test paths"""
     print("\nLoading data…")
     trainPath, testPath = TRAIN_PATH, TEST_PATH
